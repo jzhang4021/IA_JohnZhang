@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "721900402697",
+    "project_id": "newia-johnzhang",
+    "storage_bucket": "newia-johnzhang.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:721900402697:android:5e943a9f00953057d660d8",
+        "android_client_info": {
+          "package_name": "com.example.ia_johnzhang"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "721900402697-3ergsdjvmemcjvjbug8h601n1n3thksc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsOJHwHXKXrW0WWdkBpW-nkBuuJNoKxUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "721900402697-3ergsdjvmemcjvjbug8h601n1n3thksc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
