@@ -3,6 +3,7 @@ package com.example.ia_johnzhang;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignupActivity extends AppCompatActivity {
@@ -33,6 +35,7 @@ public class SignupActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
     }
 
+
     public void signUp(View v){
         final String emailString = username.getText().toString();
         String passwordString = password.getText().toString();
@@ -42,10 +45,14 @@ public class SignupActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     if(emailString.contains("@cis.edu.hk")){
-
+                        Teacher newTeach = new Teacher(emailString, "Teacher");
+                        firestore.collection("Users").document(emailString).set(newTeach);
+                        updateUI(mAuth.getCurrentUser());
                     }
-                    else{
-
+                    else {
+                        Student newStud = new Student(emailString, "Student");
+                        firestore.collection("Users").document(emailString).set(newStud);
+                        updateUI(mAuth.getCurrentUser());
                     }
                 }
                 else{
@@ -54,7 +61,16 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
+    public void updateUI(FirebaseUser currentUser){
+                if(currentUser != null) {
+                    Intent intent = new Intent(SignupActivity.this, HabitActivity.class);
+                    startActivity(intent);
+                }
+            }
+
     public void finish(View v){
         finish();
     }
+
+
 }

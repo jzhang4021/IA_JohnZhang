@@ -9,6 +9,15 @@ public class User {
     double goalSleepTime;
     double currentSleepTime;
 
+    public User(){
+
+        currentHydration = 0;
+        currentScreenTime = 0;
+        goalSleepTime = 0;
+        currentSleepTime = 0;
+
+    }
+
     public User(String email, String record){
         this.email = email;
         currentHydration = 0;

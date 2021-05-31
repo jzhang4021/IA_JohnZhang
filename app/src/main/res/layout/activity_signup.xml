@@ -55,13 +55,18 @@
         android:id="@+id/signUpLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginEnd="227dp"
+        android:layout_marginRight="227dp"
         android:layout_marginBottom="50dp"
         android:text="Sign Up"
         android:textColor="#3E3939"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView7"
-        tools:layout_editor_absoluteX="101dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/signInButton2"
@@ -69,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:background="@drawable/roundedbuttons"
-        android:onClick="login"
+        android:onClick="signUp"
         android:text="Sign Up"
         android:textColor="#FFFFFF"
         android:textColorHighlight="#FFFFFF"

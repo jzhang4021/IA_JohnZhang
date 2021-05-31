@@ -126,12 +126,15 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="255dp"
+        android:layout_marginRight="255dp"
         android:layout_marginBottom="5dp"
         android:text="Sign In"
         android:textColor="#231E1E"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textView5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
