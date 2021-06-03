@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,21 +44,25 @@ public class SignupActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    if(emailString.contains("@cis.edu.hk")){
+                if (task.isSuccessful()) {
+                    if (emailString.contains("@cis.edu.hk")) {
                         Teacher newTeach = new Teacher(emailString, "Teacher");
                         firestore.collection("Users").document(emailString).set(newTeach);
                         updateUI(mAuth.getCurrentUser());
-                    }
-                    else {
+                    } else {
                         Student newStud = new Student(emailString, "Student");
                         firestore.collection("Users").document(emailString).set(newStud);
                         updateUI(mAuth.getCurrentUser());
                     }
-                }
-                else{
+                } else {
                     Log.w("SIGN UP", "signUpWithEmail:failure", task.getException());
+                    Toast.makeText(SignupActivity.this,"Sign Up Failed", Toast.LENGTH_SHORT).show();
+
                 }
+
+
+        }
+        });
 
     }
 
@@ -68,9 +73,8 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
 
-    public void finish(View v){
+    public void endStuff(View v){
         finish();
     }
-
 
 }
