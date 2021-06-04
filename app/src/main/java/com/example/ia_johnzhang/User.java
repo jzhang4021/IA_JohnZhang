@@ -1,29 +1,23 @@
 package com.example.ia_johnzhang;
 
+import java.util.ArrayList;
+
 public class User {
 
     String email;
     String record;
-    int currentHydration;
-    double currentScreenTime;
-    double goalSleepTime;
-    double currentSleepTime;
+    ArrayList<PriorData> priorRecords;
+    PriorData currRecord;
 
     public User(){
 
-        currentHydration = 0;
-        currentScreenTime = 0;
-        goalSleepTime = 0;
-        currentSleepTime = 0;
+        currRecord = new PriorData();
 
     }
 
     public User(String email, String record){
         this.email = email;
-        currentHydration = 0;
-        currentScreenTime = 0;
-        goalSleepTime = 0;
-        currentSleepTime = 0;
+        currRecord = new PriorData();
         this.record = record;
     }
 
@@ -43,35 +37,20 @@ public class User {
         this.record = record;
     }
 
-    public int getCurrentHydration() {
-        return currentHydration;
+
+    public ArrayList<PriorData> getPriorRecords() {
+        return priorRecords;
     }
 
-    public void setCurrentHydration(int currentHydration) {
-        this.currentHydration = currentHydration;
+    public void setPriorRecords(ArrayList<PriorData> priorRecords) {
+        this.priorRecords = priorRecords;
     }
 
-    public double getCurrentScreenTime() {
-        return currentScreenTime;
+    public PriorData getCurrRecord() {
+        return currRecord;
     }
 
-    public void setCurrentScreenTime(double currentScreenTime) {
-        this.currentScreenTime = currentScreenTime;
-    }
-
-    public double getGoalSleepTime() {
-        return goalSleepTime;
-    }
-
-    public void setGoalSleepTime(double goalSleepTime) {
-        this.goalSleepTime = goalSleepTime;
-    }
-
-    public double getCurrentSleepTime() {
-        return currentSleepTime;
-    }
-
-    public void setCurrentSleepTime(double currentSleepTime) {
-        this.currentSleepTime = currentSleepTime;
+    public void setCurrRecord(PriorData currRecord) {
+        this.currRecord = currRecord;
     }
 }

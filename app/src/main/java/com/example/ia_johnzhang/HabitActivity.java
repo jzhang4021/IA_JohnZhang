@@ -9,9 +9,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,27 +31,46 @@ public class HabitActivity extends AppCompatActivity {
 
     ProgressBar waterBar;
     int waterCounter;
+    EditText addHydration;
     FirebaseFirestore firestore;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     User currUser;
     TextView border1;
     TextView wakeUpTime;
-    int t1hour,t1minute,
+    TextView hydrationMessage;
+    TextView screenTimeMessage;
+    TextView hourTextView;
+    TextView minuteTextView;
+    int t1hour,t1minute;
+    ProgressBar screenTimeBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit);
+        //initialising different views
         waterBar = this.findViewById(R.id.waterBar);
         border1 = this.findViewById(R.id.screenTimeMessage);
         wakeUpTime = this.findViewById(R.id.wakeUpTime);
+        addHydration = this.findViewById(R.id.enterHydration);
+        hydrationMessage = this.findViewById(R.id.hydrationMessage);
+        screenTimeMessage = this.findViewById(R.id.screenTimeMessage);
+        screenTimeBar = this.findViewById(R.id.screenTimeBar);
+        hourTextView = this.findViewById(R.id.hourTextView);
+        minuteTextView = this.findViewById(R.id.minuteTextView);
+
+        //set visibility
+        hydrationMessage.setVisibility(View.INVISIBLE);
+        screenTimeMessage.setVisibility(View.INVISIBLE);
 
 
         //add firebase functionality
         firestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getInstance().getCurrentUser();
+
+        waterCounter = currUser.getCurrRecord().getHydration();
 
         //set up analog time. Credits to https://www.youtube.com/watch?v=o-HVE_VxyjQ&t=43s
         wakeUpTime.setOnClickListener(new View.OnClickListener() {
@@ -101,15 +123,76 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
+        //if conditions for the water progress bar: Check if the maximum has been reached and if a message needs to be displayed
         waterBar.setMax(3000);
-        waterBar.setProgress(waterCounter);
-        ObjectAnimator.ofInt(waterBar, "Progress",waterCounter ).setDuration(2000).start();
+        if(waterCounter <  3000) {
+            waterBar.setProgress(waterCounter);
+            ObjectAnimator.ofInt(waterBar, "Progress", waterCounter).setDuration(2000).start();
+        }
+        else{
+            waterBar.setProgress(3000);
+            ObjectAnimator.ofInt(waterBar, "Progress", 3000).setDuration(2000).start();
+            hydrationMessage.setVisibility(View.VISIBLE);
+        }
 
-
-
-
+        //if conditions for the screen time: Check if the maximum has been reached and if a message needs to be displayed
+        screenTimeBar.setMax(480);
+        int temp = currUser.getCurrRecord().getScreenTime().getNumConversion();
+        if(temp < 480){
+            screenTimeBar.setProgress(temp);
+            ObjectAnimator.ofInt(screenTimeBar, "Progress", temp).setDuration(2000).start();
+        }
+        else{
+            screenTimeBar.setProgress(480);
+            ObjectAnimator.ofInt(screenTimeBar, "Progress",480).setDuration(2000).start();
+            screenTimeMessage.setVisibility(View.VISIBLE);
+        }
 
     }
+
+    public void saveHydration(View v){
+
+
+       int addAmount = Integer.parseInt(addHydration.getText().toString());
+
+        currUser.getCurrRecord().setHydration(currUser.getCurrRecord().getHydration() + addAmount);
+        firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+
+
+        if (currUser.getCurrRecord().getHydration()<  3000){
+            waterBar.incrementProgressBy(addAmount);
+        }
+        else{
+            waterBar.incrementProgressBy(3000 - currUser.getCurrRecord().getHydration());
+            hydrationMessage.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    public void saveScreenTime(View v){
+        int addHour = Integer.parseInt(hourTextView.getText().toString());
+        int addMinute = Integer.parseInt(minuteTextView.getText().toString());
+        Time tempTime = new Time(addHour,addMinute);
+
+        if(addMinute > 60){
+            Toast.makeText(this, "Less than 60 minutes please", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            currUser.getCurrRecord().getScreenTime().addHour(addHour);
+            currUser.getCurrRecord().getScreenTime().addMinute(addMinute);
+            firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+
+            if(currUser.getCurrRecord().getScreenTime().getNumConversion() < 480){
+                screenTimeBar.incrementProgressBy(tempTime.getNumConversion());
+            }
+            else{
+                screenTimeBar.incrementProgressBy(480 - currUser.getCurrRecord().getScreenTime().getNumConversion());
+                screenTimeMessage.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+
 
 
 }
