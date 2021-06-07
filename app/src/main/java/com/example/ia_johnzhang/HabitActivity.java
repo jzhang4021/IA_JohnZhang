@@ -42,8 +42,12 @@ public class HabitActivity extends AppCompatActivity {
     TextView screenTimeMessage;
     TextView hourTextView;
     TextView minuteTextView;
+    TextView sleepHourText;
+    TextView sleepMinuteText;
+    TextView sleepIndicator;
     int t1hour,t1minute;
     ProgressBar screenTimeBar;
+    ProgressBar sleepProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,10 @@ public class HabitActivity extends AppCompatActivity {
         screenTimeBar = this.findViewById(R.id.screenTimeBar);
         hourTextView = this.findViewById(R.id.hourTextView);
         minuteTextView = this.findViewById(R.id.minuteTextView);
+        sleepHourText = this.findViewById(R.id.sleepHourText);
+        sleepMinuteText = this.findViewById(R.id.sleepMinuteText);
+        sleepProgress = this.findViewById(R.id.sleepProgress);
+        sleepIndicator = this.findViewById(R.id.sleepIndicator);
 
         //set visibility
         hydrationMessage.setVisibility(View.INVISIBLE);
@@ -69,8 +77,6 @@ public class HabitActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getInstance().getCurrentUser();
-
-        waterCounter = currUser.getCurrRecord().getHydration();
 
         //set up analog time. Credits to https://www.youtube.com/watch?v=o-HVE_VxyjQ&t=43s
         wakeUpTime.setOnClickListener(new View.OnClickListener() {
@@ -119,34 +125,50 @@ public class HabitActivity extends AppCompatActivity {
                     //convert data from firebase into user
                     DocumentSnapshot ds = task.getResult();
                     currUser = ds.toObject(User.class);
+
+                    waterCounter = currUser.getCurrRecord().getHydration();
+
+                    //if conditions for the water progress bar: Check if the maximum has been reached and if a message needs to be displayed
+                    waterBar.setMax(3000);
+                    if(waterCounter <  3000) {
+                        waterBar.setProgress(waterCounter);
+                        ObjectAnimator.ofInt(waterBar, "Progress", waterCounter).setDuration(2000).start();
+                    }
+                    else{
+                        waterBar.setProgress(3000);
+                        ObjectAnimator.ofInt(waterBar, "Progress", 3000).setDuration(2000).start();
+                        hydrationMessage.setVisibility(View.VISIBLE);
+                    }
+
+                    //if conditions for the screen time: Check if the maximum has been reached and if a message needs to be displayed
+                    screenTimeBar.setMax(240);
+                    int temp = currUser.getCurrRecord().getScreenTime().getNumConversion();
+                    if(temp < 240){
+                        screenTimeBar.setProgress(temp);
+                        ObjectAnimator.ofInt(screenTimeBar, "Progress", temp).setDuration(2000).start();
+                    }
+                    else{
+                        screenTimeBar.setProgress(240);
+                        ObjectAnimator.ofInt(screenTimeBar, "Progress",240).setDuration(2000).start();
+                        screenTimeMessage.setVisibility(View.VISIBLE);
+                    }
+
+                    sleepProgress.setMax(480);
+                    int temp1 = currUser.getCurrRecord().getSleepDuration().getNumConversion();
+                    sleepIndicator.setText(currUser.getCurrRecord().getSleepDuration().getHour() + " Hrs " +
+                            currUser.getCurrRecord().getSleepDuration().getMinute() + " minutes");
+                    if(temp1 < 480){
+                        sleepProgress.setProgress(temp1);
+                        ObjectAnimator.ofInt(sleepProgress, "Progress", temp1).setDuration(2000).start();
+                    }else{
+                        sleepProgress.setProgress(temp1);
+                        ObjectAnimator.ofInt(sleepProgress, "Progress", 480).setDuration(2000).start();
+                    }
                 }
             }
         });
 
-        //if conditions for the water progress bar: Check if the maximum has been reached and if a message needs to be displayed
-        waterBar.setMax(3000);
-        if(waterCounter <  3000) {
-            waterBar.setProgress(waterCounter);
-            ObjectAnimator.ofInt(waterBar, "Progress", waterCounter).setDuration(2000).start();
-        }
-        else{
-            waterBar.setProgress(3000);
-            ObjectAnimator.ofInt(waterBar, "Progress", 3000).setDuration(2000).start();
-            hydrationMessage.setVisibility(View.VISIBLE);
-        }
 
-        //if conditions for the screen time: Check if the maximum has been reached and if a message needs to be displayed
-        screenTimeBar.setMax(480);
-        int temp = currUser.getCurrRecord().getScreenTime().getNumConversion();
-        if(temp < 480){
-            screenTimeBar.setProgress(temp);
-            ObjectAnimator.ofInt(screenTimeBar, "Progress", temp).setDuration(2000).start();
-        }
-        else{
-            screenTimeBar.setProgress(480);
-            ObjectAnimator.ofInt(screenTimeBar, "Progress",480).setDuration(2000).start();
-            screenTimeMessage.setVisibility(View.VISIBLE);
-        }
 
     }
 
@@ -163,7 +185,8 @@ public class HabitActivity extends AppCompatActivity {
             waterBar.incrementProgressBy(addAmount);
         }
         else{
-            waterBar.incrementProgressBy(3000 - currUser.getCurrRecord().getHydration());
+            //waterBar.incrementProgressBy(3000 - currUser.getCurrRecord().getHydration());
+            waterBar.incrementProgressBy(addAmount);
             hydrationMessage.setVisibility(View.VISIBLE);
         }
 
@@ -182,14 +205,35 @@ public class HabitActivity extends AppCompatActivity {
             currUser.getCurrRecord().getScreenTime().addMinute(addMinute);
             firestore.collection("Users").document(currUser.getEmail()).set(currUser);
 
-            if(currUser.getCurrRecord().getScreenTime().getNumConversion() < 480){
+            if(currUser.getCurrRecord().getScreenTime().getNumConversion() < 240){
                 screenTimeBar.incrementProgressBy(tempTime.getNumConversion());
             }
             else{
-                screenTimeBar.incrementProgressBy(480 - currUser.getCurrRecord().getScreenTime().getNumConversion());
+                screenTimeBar.incrementProgressBy(240 - currUser.getCurrRecord().getScreenTime().getNumConversion());
                 screenTimeMessage.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    public void SaveSleepTime(View v){
+        int hour = Integer.parseInt(sleepHourText.getText().toString());
+        int minute = Integer.parseInt(sleepMinuteText.getText().toString());
+        Time temp = new Time(hour, minute);
+
+        currUser.getCurrRecord().setSleepDuration(temp);
+        firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+
+        if(temp.getNumConversion() < 480){
+            sleepProgress.setProgress(temp.getNumConversion());
+            ObjectAnimator.ofInt(sleepProgress, "Progress", temp.getNumConversion()).setDuration(2000).start();
+        }
+        else{
+            sleepProgress.setProgress(480);
+            ObjectAnimator.ofInt(sleepProgress, "Progress", 480).setDuration(2000).start();
+        }
+        sleepIndicator.setText(currUser.getCurrRecord().getSleepDuration().getHour() + " Hrs " +
+                currUser.getCurrRecord().getSleepDuration().getMinute() + " min");
+
     }
 
 
