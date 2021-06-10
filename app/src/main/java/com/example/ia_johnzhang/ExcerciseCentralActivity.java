@@ -46,13 +46,15 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
     //for pop up screen
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
-    EditText workoutTitle;
+    EditText setTitle;
     ImageView relatedImage;
     private Button save;
     private Button cancel;
     private Uri imageURI;
+    private String tempLink;
     FirebaseStorage storage;
     StorageReference storageReference;
+    private WorkoutSet aSet;
 
 
 
@@ -96,7 +98,7 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
 
     }
 
-    public void createNewContactDialog(){
+    public void createNewContactDialog(View v){
         dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopupView = getLayoutInflater().inflate(R.layout.make_exercise, null);
 
@@ -108,6 +110,44 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
             }
         });
 
+        setTitle = contactPopupView.findViewById(R.id.setTitle);
+        save = contactPopupView.findViewById(R.id.save);
+        cancel = contactPopupView.findViewById(R.id.cancel);
+
+        dialogBuilder.setView(contactPopupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(setTitle.getText() == null || imageURI == null){
+                    Toast.makeText(ExcerciseCentralActivity.this, "Please input all fields", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    aSet = new WorkoutSet(setTitle.getText().toString(),tempLink);
+                    tempLink = null;
+                    imageURI = null;
+
+                    firestore.collection("WorkoutSets").document(aSet.getTitle()).set(aSet);
+                    currUser.getOwnedSets().add(aSet);
+                    firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+                    dialog.dismiss();
+
+                    Intent intent = new Intent(ExcerciseCentralActivity.this, CreateWorkoutActivity.class);
+                    startActivity(intent);
+
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageURI = null;
+                dialog.dismiss();
+            }
+        });
 
     }
 
@@ -132,7 +172,8 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
     public void uploadPicture(){
 
 
-        StorageReference newRef = storageReference.child("images/" + System.currentTimeMillis());
+        tempLink = "images/" + System.currentTimeMillis();
+        StorageReference newRef = storageReference.child(tempLink);
 
         newRef.putFile(imageURI)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
