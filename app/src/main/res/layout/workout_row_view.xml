@@ -15,7 +15,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView12"
+                android:id="@+id/workoutTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -31,18 +31,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/workoutDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="382dp"
-                android:layout_marginRight="382dp"
+                android:layout_marginEnd="377dp"
+                android:layout_marginRight="377dp"
                 android:text="Date"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView12" />
+                app:layout_constraintStart_toStartOf="@+id/workoutTitle"
+                app:layout_constraintTop_toBottomOf="@+id/workoutTitle" />
 
             <TextView
                 android:id="@+id/textView16"
@@ -61,7 +59,7 @@
                 tools:layout_editor_absoluteY="63dp" />
 
             <TextView
-                android:id="@+id/textView18"
+                android:id="@+id/workoutTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -73,7 +71,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
             <TextView
-                android:id="@+id/textView19"
+                android:id="@+id/RPE"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
