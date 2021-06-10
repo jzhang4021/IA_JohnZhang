@@ -45,6 +45,9 @@ public class CreateWorkoutActivity extends AppCompatActivity {
     WorkoutSet currWorkout;
     FirebaseFirestore firestore;
 
+    Exercise tempExercise;
+    Intent tempStuff;
+
     StorageReference storageReference;
     //DatabaseReference databaseReference;
     public static final int PICK_VID_REQUEST = 12;
@@ -75,6 +78,7 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         currWorkout =(WorkoutSet) i.getSerializableExtra("currWorkout");
 
 
+
     }
 
     //solution taken from https://www.youtube.com/watch?v=4GYKOzgQDWI
@@ -100,6 +104,24 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         dialogBuilder.setView(contactPopup);
         dialog = dialogBuilder.create();
         dialog.show();
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempExercise = null;
+                dialog.dismiss();
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempExercise = new Exercise(exerciseName.getText().toString(),RPE.getText().toString());
+                uploadVideoFirebase(tempStuff.getData());
+                currWorkout.addExercise(tempExercise);
+                tempExercise = null;
+            }
+        });
     }
 
     //https://www.youtube.com/watch?v=lY9zSr6cxko
@@ -117,13 +139,7 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         if(requestCode == PICK_VID_REQUEST && resultCode == RESULT_OK && data.getData() != null){
             saveButton.setEnabled(true);
             aVideo.setText(data.getDataString());
-
-            saveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    uploadVideoFirebase(data.getData());
-                }
-            });
+            tempStuff = data;
         }
     }
 
@@ -132,7 +148,8 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         progressDialog.setTitle("File is loading...");
         progressDialog.show();
 
-        StorageReference reference = storageReference.child("Video" + System.currentTimeMillis());
+        tempExercise.setResourcePath("video/" + System.currentTimeMillis());
+        StorageReference reference = storageReference.child(tempExercise.getResourcePath());
         reference.putFile(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

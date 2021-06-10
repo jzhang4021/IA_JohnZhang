@@ -5,6 +5,12 @@ public class Exercise {
     String RPE;
     String resourcePath;
 
+    public Exercise(String name, String RPE){
+        this.name = name;
+        this.RPE = RPE;
+        resourcePath = "";
+    }
+
     public Exercise(String name, String RPE, String resourcePath) {
         this.name = name;
         this.RPE = RPE;

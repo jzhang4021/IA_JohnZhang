@@ -31,6 +31,10 @@ public class WorkoutSet implements Serializable {
         this.imageResource = imageResource;
     }
 
+    public void addExercise(Exercise a){
+        exercises.add(a);
+    }
+
     public ArrayList<Exercise> getExercises() {
         return exercises;
     }
