@@ -14,10 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -34,7 +39,11 @@ public class CreateWorkoutActivity extends AppCompatActivity {
     private EditText aVideo;
     private Button saveButton;
     private Button cancel;
+    FirebaseAuth mAuth;
+    FirebaseUser mUser;
+    User currUser;
     WorkoutSet currWorkout;
+    FirebaseFirestore firestore;
 
     StorageReference storageReference;
     //DatabaseReference databaseReference;
@@ -47,13 +56,29 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_workout);
 
         storageReference = FirebaseStorage.getInstance().getReference();
-        currWorkout()
+        firestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getInstance().getCurrentUser();
+
+        firestore.collection("Users").document(mUser.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                                 @Override
+                                                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                                                     if (task.isSuccessful()) {
+                                                                                                         //convert data from firebase into user
+                                                                                                         DocumentSnapshot ds = task.getResult();
+                                                                                                         currUser = ds.toObject(User.class);
+                                                                                                     }
+                                                                                                 }
+                                                                                             });
+
+        Intent i = getIntent();
+        currWorkout =(WorkoutSet) i.getSerializableExtra("currWorkout");
 
 
     }
 
     //solution taken from https://www.youtube.com/watch?v=4GYKOzgQDWI
-    public void createNewContactDialog(){
+    public void createNewContactDialog(View v){
         dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopup = getLayoutInflater().inflate(R.layout.popup, null);
 
@@ -122,5 +147,11 @@ public class CreateWorkoutActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void finishActivity(View v){
+        firestore.collection("WorkoutSets").document(currWorkout.getTitle()).set(currWorkout);
+        currUser.getOwnedSets().add(currWorkout);
+        firestore.collection("Users").document(currUser.getEmail()).set(currUser);
     }
 }

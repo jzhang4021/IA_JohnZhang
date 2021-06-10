@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ObjectAnimator;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -237,6 +238,11 @@ public class HabitActivity extends AppCompatActivity {
     }
 
 
+    public void goToExerciseCentral(View v){
+        System.out.println("Please respond x ");
+        Intent intent = new Intent(HabitActivity.this, ExcerciseCentralActivity.class);
+        startActivity(intent);
+    }
 
 
 }

@@ -59,7 +59,6 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
 
 
 
-    LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +71,12 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
+        workoutLog = findViewById(R.id.workoutLog);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        workoutLog.setLayoutManager(layoutManager);
+
+        System.out.println("AM I HERE");
+
         firestore.collection("Users").document(mUser.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                                                                  @Override
                                                                                                  public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -79,22 +84,25 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
                                                                                                          //convert data from firebase into user
                                                                                                          DocumentSnapshot ds = task.getResult();
                                                                                                          currUser = ds.toObject(User.class);
+                                                                                                         System.out.println(currUser.getEmail() + "gotten");
+
+
+                                                                                                         System.out.println("here " + currUser.getFinishedWorkouts().toString());
+                                                                                                         WorkoutLogAdapter myAdapter = new WorkoutLogAdapter(currUser.getFinishedWorkouts());
+                                                                                                         workoutLog.setAdapter(myAdapter);
+
+                                                                                                         adapter = new SetListAdapter(ExcerciseCentralActivity.this, currUser.getOwnedSets());
+
+                                                                                                         setsList = findViewById(R.id.setsList);
+
+                                                                                                         GridLayoutManager gridLayoutManager = new GridLayoutManager(ExcerciseCentralActivity.this, 2,GridLayoutManager.VERTICAL, false);
+                                                                                                         setsList.setLayoutManager(gridLayoutManager);
                                                                                                      }
                                                                                                  }
                                                                                              });
 
 
-        workoutLog = findViewById(R.id.workoutLog);
-        workoutLog.setLayoutManager(layoutManager);
-        WorkoutLogAdapter myAdapter = new WorkoutLogAdapter(currUser.getFinishedWorkouts());
-        workoutLog.setAdapter(myAdapter);
 
-        adapter = new SetListAdapter(this, currUser.getOwnedSets());
-
-        setsList = findViewById(R.id.setsList);
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2,GridLayoutManager.VERTICAL, false);
-        setsList.setLayoutManager(gridLayoutManager);
 
     }
 
@@ -130,11 +138,10 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
                     imageURI = null;
 
                     firestore.collection("WorkoutSets").document(aSet.getTitle()).set(aSet);
-                    currUser.getOwnedSets().add(aSet);
-                    firestore.collection("Users").document(currUser.getEmail()).set(currUser);
                     dialog.dismiss();
 
                     Intent intent = new Intent(ExcerciseCentralActivity.this, CreateWorkoutActivity.class);
+                    intent.putExtra("currWorkout", aSet);
                     startActivity(intent);
 
                 }

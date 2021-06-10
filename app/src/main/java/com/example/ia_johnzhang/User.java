@@ -16,6 +16,7 @@ public class User {
         currRecord = new PriorData();
         ownedSets = new ArrayList<>();
         finishedWorkouts = new ArrayList<>();
+        ownedSets = new ArrayList<>();
 
     }
 

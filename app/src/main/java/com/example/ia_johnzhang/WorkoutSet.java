@@ -1,8 +1,10 @@
 package com.example.ia_johnzhang;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class WorkoutSet {
+@SuppressWarnings("serial")
+public class WorkoutSet implements Serializable {
     String title;
     String imageResource;
     ArrayList<Exercise> exercises;
