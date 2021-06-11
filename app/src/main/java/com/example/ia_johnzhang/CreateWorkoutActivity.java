@@ -3,18 +3,25 @@ package com.example.ia_johnzhang;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MediaController;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,8 +35,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import io.grpc.Context;
-
 public class CreateWorkoutActivity extends AppCompatActivity {
 
     private AlertDialog.Builder dialogBuilder;
@@ -39,6 +44,7 @@ public class CreateWorkoutActivity extends AppCompatActivity {
     private EditText aVideo;
     private Button saveButton;
     private Button cancel;
+    private RecyclerView exerciseView;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     User currUser;
@@ -47,6 +53,10 @@ public class CreateWorkoutActivity extends AppCompatActivity {
 
     Exercise tempExercise;
     Intent tempStuff;
+
+    private AlertDialog.Builder dialogBuilder1;
+    private AlertDialog dialog1;
+    VideoView vidView;
 
     StorageReference storageReference;
     //DatabaseReference databaseReference;
@@ -77,12 +87,16 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         Intent i = getIntent();
         currWorkout =(WorkoutSet) i.getSerializableExtra("currWorkout");
 
+        exerciseView = findViewById(R.id.exerciseView);
+
 
 
     }
 
     //solution taken from https://www.youtube.com/watch?v=4GYKOzgQDWI
-    public void createNewContactDialog(View v){
+
+
+    public void createNewExerciseDialog(View v){
         dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopup = getLayoutInflater().inflate(R.layout.popup, null);
 
@@ -164,6 +178,34 @@ public class CreateWorkoutActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void createNewVideoDialog(Exercise thisExercise){
+        dialogBuilder1 = new AlertDialog.Builder(this);
+
+        final View vidPopup = getLayoutInflater().inflate(R.layout.watch_video_popup, null);
+
+        vidView = vidPopup.findViewById(R.id.videoView);
+
+        MediaController mediaController = new MediaController(this);
+        vidView.setMediaController(mediaController);
+        mediaController.setAnchorView(vidView);
+
+        StorageReference newRef = storageReference.child(thisExercise.getResourcePath());
+
+        newRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                vidView.setVideoURI(uri);
+                vidView.start();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CreateWorkoutActivity.this, "Video upload failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void finishActivity(View v){
