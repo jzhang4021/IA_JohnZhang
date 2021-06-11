@@ -7,12 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,8 +23,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,9 +42,9 @@ public class CreateWorkoutActivity extends AppCompatActivity {
     private RecyclerView exerciseView;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
+    FirebaseFirestore firestore;
     User currUser;
     WorkoutSet currWorkout;
-    FirebaseFirestore firestore;
 
     Exercise tempExercise;
     Intent tempStuff;
@@ -88,8 +83,8 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         Intent i = getIntent();
         currWorkout =(WorkoutSet) i.getSerializableExtra("currWorkout");
 
-        exerciseView = findViewById(R.id.exerciseView);
-
+        exerciseView = findViewById(R.id.ordinaryRecycler);
+        regenRecyclerView();
 
 
     }
@@ -222,9 +217,22 @@ public class CreateWorkoutActivity extends AppCompatActivity {
 
     }
 
-    private void finishActivity(View v){
+    public void finishActivity(View v){
         firestore.collection("WorkoutSets").document(currWorkout.getTitle()).set(currWorkout);
-        currUser.getOwnedSets().add(currWorkout);
+
+        //if the workout doesnt exist in owned sets, it means this is an edit view
+        if(!currUser.getOwnedSets().contains(currWorkout)) {
+            currUser.getOwnedSets().add(currWorkout);
+        }
+
         firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+        finish();
+    }
+
+    public void regenRecyclerView(){
+
+        exerciseAdapter adapter = new exerciseAdapter();
+        exerciseView.setAdapter(adapter);
+
     }
 }

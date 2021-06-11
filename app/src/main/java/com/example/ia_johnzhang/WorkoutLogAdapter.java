@@ -29,9 +29,9 @@ public class WorkoutLogAdapter extends RecyclerView.Adapter<WorkoutLogViewHolder
     @Override
     public void onBindViewHolder(@NonNull WorkoutLogViewHolder holder, int position) {
         holder.workoutTitle.setText(mData.get(position).getTitle());
-        holder.workoutDuration.setText(mData.get(position).getWorkoutTime().toString());
+        holder.workoutDuration.setText(mData.get(position).getTimeStringVers());
         holder.workoutDate.setText(mData.get(position).getDate());
-        holder.RPE.setText(mData.get(position).getRPE());
+        holder.RPE.setText("RPE: " + mData.get(position).getRPE());
 
     }
 

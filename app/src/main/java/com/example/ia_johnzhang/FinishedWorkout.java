@@ -2,6 +2,7 @@ package com.example.ia_johnzhang;
 
 public class FinishedWorkout {
     Time workoutTime;
+    String timeStringVers;
     String RPE;
     String date;
     String title;
@@ -11,6 +12,21 @@ public class FinishedWorkout {
         this.RPE = RPE;
         this.date = date;
         this.title = title;
+    }
+
+    public FinishedWorkout(String timeStringVers, String RPE, String date, String title){
+        this.timeStringVers = timeStringVers;
+        this.RPE = RPE;
+        this.date = date;
+        this.title = title;
+    }
+
+    public String getTimeStringVers() {
+        return timeStringVers;
+    }
+
+    public void setTimeStringVers(String timeStringVers) {
+        this.timeStringVers = timeStringVers;
     }
 
     public Time getWorkoutTime() {

@@ -18,7 +18,7 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
     public ExerciseViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        exerciseTitle = itemView.findViewById(R.id.exerciseTitleText);
+        exerciseTitle = itemView.findViewById(R.id.exerciseTitle);
         RPETextView = itemView.findViewById(R.id.RPETextView);
         showVidButton = itemView.findViewById(R.id.openVidButton);
         deleteExerciseButton = itemView.findViewById(R.id.deleteButton);

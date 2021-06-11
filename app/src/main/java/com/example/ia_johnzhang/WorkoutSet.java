@@ -31,6 +31,22 @@ public class WorkoutSet implements Serializable {
         this.imageResource = imageResource;
     }
 
+    public void removeItem(int index){
+        exercises.remove(index);
+    }
+
+    public String getAverageRPE(){
+        int giveBack = 0;
+
+        for(int i = 0; i < getExercises().size(); i++){
+            giveBack += Integer.parseInt(getExercises().get(i).getRPE());
+        }
+
+        giveBack = giveBack / getExercises().size();
+
+        return String.valueOf(giveBack);
+    }
+
     public void addExercise(Exercise a){
         exercises.add(a);
     }

@@ -42,6 +42,7 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
     FirebaseUser mUser;
     User currUser;
     SetListAdapter adapter;
+    private Button makeNewExerciseButton;
 
     //for pop up screen
     private AlertDialog.Builder dialogBuilder;
@@ -70,40 +71,23 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
         mUser = mAuth.getInstance().getCurrentUser();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        makeNewExerciseButton = findViewById(R.id.button3);
 
         workoutLog = findViewById(R.id.workoutLog);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         workoutLog.setLayoutManager(layoutManager);
 
-        System.out.println("AM I HERE");
 
-        firestore.collection("Users").document(mUser.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                                                 @Override
-                                                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                                                     if (task.isSuccessful()) {
-                                                                                                         //convert data from firebase into user
-                                                                                                         DocumentSnapshot ds = task.getResult();
-                                                                                                         currUser = ds.toObject(User.class);
-                                                                                                         System.out.println(currUser.getEmail() + "gotten");
+        regenRecyclerView();
 
 
-                                                                                                         System.out.println("here " + currUser.getFinishedWorkouts().toString());
-                                                                                                         WorkoutLogAdapter myAdapter = new WorkoutLogAdapter(currUser.getFinishedWorkouts());
-                                                                                                         workoutLog.setAdapter(myAdapter);
+    }
 
-                                                                                                         adapter = new SetListAdapter(ExcerciseCentralActivity.this, currUser.getOwnedSets());
-
-                                                                                                         setsList = findViewById(R.id.setsList);
-
-                                                                                                         GridLayoutManager gridLayoutManager = new GridLayoutManager(ExcerciseCentralActivity.this, 2,GridLayoutManager.VERTICAL, false);
-                                                                                                         setsList.setLayoutManager(gridLayoutManager);
-                                                                                                     }
-                                                                                                 }
-                                                                                             });
-
-
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        regenRecyclerView();
     }
 
     public void createNewContactDialog(View v){
@@ -195,5 +179,34 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Image Failed", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public void regenRecyclerView(){
+        firestore.collection("Users").document(mUser.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    //convert data from firebase into user
+                    DocumentSnapshot ds = task.getResult();
+                    currUser = ds.toObject(User.class);
+
+                    //set button invisible for students
+                    if(!currUser.getRecord().equals("Teacher")){
+                        makeNewExerciseButton.setVisibility(View.INVISIBLE);
+                    }
+
+                    WorkoutLogAdapter myAdapter = new WorkoutLogAdapter(currUser.getFinishedWorkouts());
+                    workoutLog.setAdapter(myAdapter);
+
+                    adapter = new SetListAdapter(ExcerciseCentralActivity.this, currUser.getOwnedSets(), currUser);
+
+                    setsList = findViewById(R.id.setsList);
+                    setsList.setAdapter(adapter);
+
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(ExcerciseCentralActivity.this, 2,GridLayoutManager.VERTICAL, false);
+                    setsList.setLayoutManager(gridLayoutManager);
+                }
+            }
+        });
     }
 }

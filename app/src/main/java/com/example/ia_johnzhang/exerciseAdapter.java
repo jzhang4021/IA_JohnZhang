@@ -64,12 +64,22 @@ public class exerciseAdapter extends RecyclerView.Adapter<ExerciseViewHolder> {
             }
         });
 
+        holder.deleteExerciseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mContext instanceof CreateWorkoutActivity) {
+                    ((CreateWorkoutActivity) mContext).currWorkout.removeItem(position);
+                    ((CreateWorkoutActivity) mContext).regenRecyclerView();
+                }
+            }
+        });
+
 
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return exerciseArrayList.size();
     }
 
 }
