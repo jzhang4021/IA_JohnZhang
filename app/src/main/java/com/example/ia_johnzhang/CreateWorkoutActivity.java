@@ -57,6 +57,7 @@ public class CreateWorkoutActivity extends AppCompatActivity {
     private AlertDialog.Builder dialogBuilder1;
     private AlertDialog dialog1;
     VideoView vidView;
+    Button closeVidButton;
 
     StorageReference storageReference;
     //DatabaseReference databaseReference;
@@ -203,6 +204,19 @@ public class CreateWorkoutActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(CreateWorkoutActivity.this, "Video upload failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        closeVidButton = vidPopup.findViewById(R.id.closeVidButton);
+
+        dialogBuilder1.setView(vidPopup);
+        dialog1 = dialogBuilder1.create();
+        dialog1.show();
+
+        closeVidButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog1.dismiss();
             }
         });
 

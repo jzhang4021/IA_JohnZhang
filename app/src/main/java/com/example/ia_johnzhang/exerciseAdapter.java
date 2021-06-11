@@ -64,6 +64,7 @@ public class exerciseAdapter extends RecyclerView.Adapter<ExerciseViewHolder> {
             }
         });
 
+
     }
 
     @Override
