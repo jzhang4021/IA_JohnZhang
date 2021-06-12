@@ -27,9 +27,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
 
 import io.grpc.Context;
 
@@ -57,7 +61,15 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
     StorageReference storageReference;
     private WorkoutSet aSet;
 
+    //for finding an available exercise
+    private AlertDialog.Builder dialogBuilder2;
+    AlertDialog dialog2;
+    private RecyclerView availableExerciseRecycler;
+    private Button button5;
 
+
+    //temp storage
+    View tempPopup;
 
 
 
@@ -209,4 +221,52 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void addExercise(View v){
+        dialogBuilder2 = new AlertDialog.Builder(this);
+
+        tempPopup = getLayoutInflater().inflate(R.layout.choose_workout_popup, null);
+
+        availableExerciseRecycler = tempPopup.findViewById(R.id.availableExerciseRecycler);
+        button5 = tempPopup.findViewById(R.id.button5);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        availableExerciseRecycler.setLayoutManager(layoutManager);
+
+
+        ArrayList<WorkoutSet> passIn = new ArrayList<>();
+
+        firestore.collection("Workouts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot document: task.getResult()){
+                        WorkoutSet temp = document.toObject(WorkoutSet.class);
+                        passIn.add(temp);
+                    }
+
+                    addExerciseAdapter adapter = new addExerciseAdapter(passIn, currUser);
+                    availableExerciseRecycler.setAdapter(adapter);
+
+                    dialogBuilder2.setView(tempPopup);
+                    dialog2 = dialogBuilder2.create();
+                    dialog2.show();
+
+                }
+            }
+        });
+
+        button5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog2.dismiss();
+            }
+        });
+
+    }
+
+    public void goToHabits(View v){
+        finish();
+    }
+
 }

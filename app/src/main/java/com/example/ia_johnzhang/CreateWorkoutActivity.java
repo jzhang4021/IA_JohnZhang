@@ -59,6 +59,9 @@ public class CreateWorkoutActivity extends AppCompatActivity {
     public static final int PICK_VID_REQUEST = 12;
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -229,10 +232,12 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         finish();
     }
 
+
     public void regenRecyclerView(){
 
         exerciseAdapter adapter = new exerciseAdapter();
         exerciseView.setAdapter(adapter);
 
     }
+
 }
