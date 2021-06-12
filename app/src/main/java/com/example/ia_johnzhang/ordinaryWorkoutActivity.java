@@ -2,6 +2,7 @@ package com.example.ia_johnzhang;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
@@ -133,7 +134,9 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
     public void regenRecyclerView(){
 
         ordinaryWorkoutAdapter adapter = new ordinaryWorkoutAdapter(currWorkout.getExercises());
+        LinearLayoutManager hi = new LinearLayoutManager(this);
         ordinaryExerciseRecycler.setAdapter(adapter);
+        ordinaryExerciseRecycler.setLayoutManager(hi);
 
     }
 

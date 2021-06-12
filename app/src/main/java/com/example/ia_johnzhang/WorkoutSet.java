@@ -38,6 +38,10 @@ public class WorkoutSet implements Serializable {
     public String getAverageRPE(){
         int giveBack = 0;
 
+        if(getExercises().size() == 0){
+            return "N/A";
+        }
+
         for(int i = 0; i < getExercises().size(); i++){
             giveBack += Integer.parseInt(getExercises().get(i).getRPE());
         }

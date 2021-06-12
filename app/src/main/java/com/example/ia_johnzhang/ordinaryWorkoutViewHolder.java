@@ -1,7 +1,9 @@
 package com.example.ia_johnzhang;
 
+import android.media.Image;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,7 +15,7 @@ public class ordinaryWorkoutViewHolder extends RecyclerView.ViewHolder {
 
     TextView ordinaryTitle;
     TextView ordinaryRPE;
-    Button watchVidButton;
+    ImageButton watchVidButton;
 
     public ordinaryWorkoutViewHolder(@NonNull View itemView) {
         super(itemView);

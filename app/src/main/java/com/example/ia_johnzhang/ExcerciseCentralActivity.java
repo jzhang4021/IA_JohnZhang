@@ -87,9 +87,6 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
 
         workoutLog = findViewById(R.id.workoutLog);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        workoutLog.setLayoutManager(layoutManager);
-
 
         regenRecyclerView();
 
@@ -133,7 +130,7 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
                     tempLink = null;
                     imageURI = null;
 
-                    firestore.collection("WorkoutSets").document(aSet.getTitle()).set(aSet);
+                    firestore.collection("Workouts").document(aSet.getTitle()).set(aSet);
                     dialog.dismiss();
 
                     Intent intent = new Intent(ExcerciseCentralActivity.this, CreateWorkoutActivity.class);
@@ -207,6 +204,9 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
                         makeNewExerciseButton.setVisibility(View.INVISIBLE);
                     }
 
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(ExcerciseCentralActivity.this, LinearLayoutManager.HORIZONTAL, false);
+                    workoutLog.setLayoutManager(layoutManager);
+
                     WorkoutLogAdapter myAdapter = new WorkoutLogAdapter(currUser.getFinishedWorkouts());
                     workoutLog.setAdapter(myAdapter);
 
@@ -230,7 +230,7 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
         availableExerciseRecycler = tempPopup.findViewById(R.id.availableExerciseRecycler);
         button5 = tempPopup.findViewById(R.id.button5);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
         availableExerciseRecycler.setLayoutManager(layoutManager);
 
 
@@ -266,7 +266,8 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
     }
 
     public void goToHabits(View v){
-        finish();
+        Intent intent = new Intent(ExcerciseCentralActivity.this, HabitActivity.class);
+        startActivity(intent);
     }
 
 }

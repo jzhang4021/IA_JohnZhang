@@ -3,6 +3,7 @@ package com.example.ia_johnzhang;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
@@ -99,7 +100,7 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopup = getLayoutInflater().inflate(R.layout.popup, null);
 
-        exerciseName = contactPopup.findViewById(R.id.exerciseTitle);
+        exerciseName = contactPopup.findViewById(R.id.exerciseName);
         RPE = contactPopup.findViewById(R.id.RPE);
         aVideo = contactPopup.findViewById(R.id.aVideo);
         saveButton = contactPopup.findViewById(R.id.submitButton);
@@ -133,6 +134,8 @@ public class CreateWorkoutActivity extends AppCompatActivity {
                 uploadVideoFirebase(tempStuff.getData());
                 currWorkout.addExercise(tempExercise);
                 tempExercise = null;
+                dialog.dismiss();
+                regenRecyclerView();
             }
         });
     }
@@ -235,8 +238,9 @@ public class CreateWorkoutActivity extends AppCompatActivity {
 
     public void regenRecyclerView(){
 
-        exerciseAdapter adapter = new exerciseAdapter();
+        exerciseAdapter adapter = new exerciseAdapter(currWorkout.getExercises());
         exerciseView.setAdapter(adapter);
+        exerciseView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 

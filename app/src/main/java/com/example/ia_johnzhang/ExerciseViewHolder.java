@@ -2,6 +2,7 @@ package com.example.ia_johnzhang;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,8 +12,8 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
 
     TextView exerciseTitle;
     TextView RPETextView;
-    Button showVidButton;
-    Button deleteExerciseButton;
+    ImageButton showVidButton;
+    ImageButton deleteExerciseButton;
 
 
     public ExerciseViewHolder(@NonNull View itemView) {

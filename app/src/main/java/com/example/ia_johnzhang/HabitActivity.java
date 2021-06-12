@@ -244,5 +244,11 @@ public class HabitActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void LogOut(View v){
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(HabitActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
+
 
 }

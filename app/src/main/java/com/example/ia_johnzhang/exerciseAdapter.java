@@ -26,22 +26,21 @@ import java.util.ArrayList;
 
 public class exerciseAdapter extends RecyclerView.Adapter<ExerciseViewHolder> {
 
-    ArrayList<Exercise> exerciseArrayList;
-
-
-    FirebaseStorage storage;
-    StorageReference storageRef;
-    Exercise currExercise;
     Context mContext;
+    ArrayList<Exercise> exerciseArrayList;
+    Exercise currExercise;
+
+
+
+    public exerciseAdapter(ArrayList<Exercise> exerciseArrayList){
+        this.exerciseArrayList = exerciseArrayList;
+    }
 
     @NonNull
     @Override
     public ExerciseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View myView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exercise_edit_row, parent,false);
         ExerciseViewHolder holder = new ExerciseViewHolder(myView);
-
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
 
         mContext = parent.getContext();
 
