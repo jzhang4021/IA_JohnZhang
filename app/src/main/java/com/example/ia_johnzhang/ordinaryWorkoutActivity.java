@@ -81,6 +81,8 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         currWorkout =(WorkoutSet) i.getSerializableExtra("currWorkout");
+        System.out.println(currWorkout.getExercises().get(0).getName());
+        System.out.println(currWorkout.getExercises().get(0).getRPE());
 
         ordinaryExerciseRecycler = findViewById(R.id.ordinaryRecycler);
         regenRecyclerView();

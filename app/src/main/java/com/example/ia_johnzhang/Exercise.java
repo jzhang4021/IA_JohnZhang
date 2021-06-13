@@ -1,9 +1,16 @@
 package com.example.ia_johnzhang;
 
-public class Exercise {
+import java.io.Serializable;
+
+public class Exercise implements Serializable {
     String name;
     String RPE;
     String resourcePath;
+
+    public Exercise(){
+        name = "name";
+        RPE = "N/A";
+    }
 
     public Exercise(String name, String RPE){
         this.name = name;

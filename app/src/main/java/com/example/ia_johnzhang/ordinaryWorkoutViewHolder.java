@@ -20,7 +20,7 @@ public class ordinaryWorkoutViewHolder extends RecyclerView.ViewHolder {
     public ordinaryWorkoutViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        ordinaryTitle = itemView.findViewById(R.id.ordinaryTitleView);
+        ordinaryTitle = itemView.findViewById(R.id.ordinaryExerciseTitle);
         ordinaryRPE = itemView.findViewById(R.id.ordinaryRPEText);
         watchVidButton = itemView.findViewById(R.id.watchVidButton);
 

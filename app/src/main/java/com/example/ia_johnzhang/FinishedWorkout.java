@@ -7,6 +7,14 @@ public class FinishedWorkout {
     String date;
     String title;
 
+    public FinishedWorkout(){
+        workoutTime = new Time(0,0);
+        timeStringVers = "0";
+        RPE = "0";
+        date = "0";
+        title = "asdlkf";
+    }
+
     public FinishedWorkout(Time workoutTime, String RPE, String date, String title) {
         this.workoutTime = workoutTime;
         this.RPE = RPE;

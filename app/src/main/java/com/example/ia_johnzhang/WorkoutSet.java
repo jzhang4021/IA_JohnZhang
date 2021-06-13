@@ -9,6 +9,12 @@ public class WorkoutSet implements Serializable {
     String imageResource;
     ArrayList<Exercise> exercises;
 
+    public WorkoutSet(){
+        title = "title";
+        imageResource = "";
+        exercises = new ArrayList<>();
+    }
+
     public WorkoutSet(String title, String imageResource) {
         this.title = title;
         this.imageResource = imageResource;

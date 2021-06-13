@@ -130,7 +130,7 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
                     tempLink = null;
                     imageURI = null;
 
-                    firestore.collection("Workouts").document(aSet.getTitle()).set(aSet);
+                    firestore.collection("WorkoutSets").document(aSet.getTitle()).set(aSet);
                     dialog.dismiss();
 
                     Intent intent = new Intent(ExcerciseCentralActivity.this, CreateWorkoutActivity.class);
@@ -236,7 +236,7 @@ public class ExcerciseCentralActivity extends AppCompatActivity {
 
         ArrayList<WorkoutSet> passIn = new ArrayList<>();
 
-        firestore.collection("Workouts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("WorkoutSets").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){

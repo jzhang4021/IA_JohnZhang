@@ -73,6 +73,7 @@ public class addExerciseAdapter extends RecyclerView.Adapter<addExerciseViewHold
                 currUser.getOwnedSets().add(availableWorkoutsList.get(position));
                 firestore.collection("Users").document(currUser.getEmail()).set(currUser);
                 ((ExcerciseCentralActivity) context).dialog2.dismiss();
+                ((ExcerciseCentralActivity) context).regenRecyclerView();
             }
         });
     }

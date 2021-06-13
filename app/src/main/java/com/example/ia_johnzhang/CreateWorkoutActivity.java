@@ -224,15 +224,23 @@ public class CreateWorkoutActivity extends AppCompatActivity {
     }
 
     public void finishActivity(View v){
-        firestore.collection("WorkoutSets").document(currWorkout.getTitle()).set(currWorkout);
+        firestore.collection("WorkoutSets").document(currWorkout.getTitle()).set(currWorkout).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(!currUser.getOwnedSets().contains(currWorkout)) {
+                    currUser.getOwnedSets().add(currWorkout);
+                }
 
-        //if the workout doesnt exist in owned sets, it means this is an edit view
-        if(!currUser.getOwnedSets().contains(currWorkout)) {
-            currUser.getOwnedSets().add(currWorkout);
-        }
+                firestore.collection("Users").document(currUser.getEmail()).set(currUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        finish();
+                    }
+                });
 
-        firestore.collection("Users").document(currUser.getEmail()).set(currUser);
-        finish();
+            }
+        });
+
     }
 
 

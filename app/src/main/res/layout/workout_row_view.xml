@@ -18,8 +18,8 @@
                 android:id="@+id/workoutTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
                 android:layout_marginEnd="273dp"
                 android:layout_marginRight="273dp"
                 android:text="The Workout"
@@ -35,8 +35,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="377dp"
-                android:layout_marginRight="377dp"
+                android:layout_marginEnd="357dp"
+                android:layout_marginRight="357dp"
                 android:text="Date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/workoutTitle"
@@ -46,17 +46,29 @@
                 android:id="@+id/textView16"
                 android:layout_width="67dp"
                 android:layout_height="78dp"
+                android:layout_marginStart="36dp"
+                android:layout_marginLeft="36dp"
+                android:layout_marginTop="63dp"
+                android:layout_marginEnd="137dp"
+                android:layout_marginRight="137dp"
                 android:background="@drawable/ic_baseline_whatshot_24"
-                tools:layout_editor_absoluteX="207dp"
-                tools:layout_editor_absoluteY="63dp" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView17"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView17"
                 android:layout_width="78dp"
                 android:layout_height="81dp"
+                android:layout_marginStart="93dp"
+                android:layout_marginLeft="93dp"
+                android:layout_marginTop="31dp"
+                android:layout_marginEnd="36dp"
+                android:layout_marginRight="36dp"
                 android:background="@drawable/ic_baseline_av_timer_24"
-                tools:layout_editor_absoluteX="93dp"
-                tools:layout_editor_absoluteY="63dp" />
+                app:layout_constraintEnd_toStartOf="@+id/textView16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/workoutTitle" />
 
             <TextView
                 android:id="@+id/workoutTime"
