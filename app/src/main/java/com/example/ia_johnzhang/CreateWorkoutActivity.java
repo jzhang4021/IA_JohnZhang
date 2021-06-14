@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -52,6 +53,8 @@ public class CreateWorkoutActivity extends AppCompatActivity {
     Exercise tempExercise;
     Intent tempStuff;
     StorageReference storageReference;
+
+    TextView WorkoutTitle;
 
 
     //dialog and components for watching vdieo
@@ -93,6 +96,8 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         Intent i = getIntent();
         currWorkout =(WorkoutSet) i.getSerializableExtra("currWorkout");
 
+        WorkoutTitle = findViewById(R.id.textView12);
+        WorkoutTitle.setText(currWorkout.getTitle());
         exerciseView = findViewById(R.id.ordinaryRecycler);
         //generate recycler view layout - made into a function so it can be updated
         regenRecyclerView();
@@ -266,9 +271,9 @@ public class CreateWorkoutActivity extends AppCompatActivity {
                     if (currUser.getOwnedSets().get(i).getTitle().equals(currWorkout.getTitle())){
                         currUser.getOwnedSets().remove(i);
                     }
-
-                    currUser.getOwnedSets().add(currWorkout);
                 }
+
+                currUser.getOwnedSets().add(currWorkout);
 
                 //update user profile
                 firestore.collection("Users").document(currUser.getEmail()).set(currUser).addOnCompleteListener(new OnCompleteListener<Void>() {

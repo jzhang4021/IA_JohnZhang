@@ -3,19 +3,15 @@ package com.example.ia_johnzhang;
 public class Time {
     int hour;
     int minute;
-    //conversion into a double for the progress bar
-    double numConversion;
 
     public Time(){
         hour = 0;
         minute = 0;
-        numConversion = 0.0;
     }
 
     public Time(int hour,int minute){
         this.hour = hour;
         this.minute = minute;
-        numConversion = 0.0;
     }
 
     public int getHour() {

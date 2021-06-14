@@ -244,18 +244,21 @@ public class HabitActivity extends AppCompatActivity {
         currUser.getCurrRecord().setSleepDuration(temp);
         firestore.collection("Users").document(currUser.getEmail()).set(currUser);
 
-        //check if user has slept past the limit, set value to max if so
-        if(temp.getNumConversion() < 480){
-            sleepProgress.setProgress(temp.getNumConversion());
-            ObjectAnimator.ofInt(sleepProgress, "Progress", temp.getNumConversion()).setDuration(2000).start();
+        if(minute > 60){
+            Toast.makeText(this, "Less than 60 minutes please", Toast.LENGTH_SHORT).show();
         }
-        else{
-            sleepProgress.setProgress(480);
-            ObjectAnimator.ofInt(sleepProgress, "Progress", 480).setDuration(2000).start();
+        else {
+            //check if user has slept past the limit, set value to max if so
+            if (temp.getNumConversion() < 480) {
+                sleepProgress.setProgress(temp.getNumConversion());
+                ObjectAnimator.ofInt(sleepProgress, "Progress", temp.getNumConversion()).setDuration(2000).start();
+            } else {
+                sleepProgress.setProgress(480);
+                ObjectAnimator.ofInt(sleepProgress, "Progress", 480).setDuration(2000).start();
+            }
+            sleepIndicator.setText(currUser.getCurrRecord().getSleepDuration().getHour() + " Hrs " +
+                    currUser.getCurrRecord().getSleepDuration().getMinute() + " min");
         }
-        sleepIndicator.setText(currUser.getCurrRecord().getSleepDuration().getHour() + " Hrs " +
-                currUser.getCurrRecord().getSleepDuration().getMinute() + " min");
-
     }
 
 

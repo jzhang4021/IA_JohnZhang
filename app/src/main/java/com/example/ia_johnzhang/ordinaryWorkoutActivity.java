@@ -45,6 +45,7 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
     VideoView vidView;
     Button closeVidButton;
 
+
     StorageReference storageReference;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
@@ -83,6 +84,7 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
         //pass in current workout from previous activity
         Intent i = getIntent();
         currWorkout =(WorkoutSet) i.getSerializableExtra("currWorkout");
+        ordinaryTitleView.setText(currWorkout.getTitle());
         System.out.println(currWorkout.getExercises().get(0).getName());
         System.out.println(currWorkout.getExercises().get(0).getRPE());
         ordinaryExerciseRecycler = findViewById(R.id.ordinaryRecycler);
