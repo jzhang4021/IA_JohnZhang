@@ -39,9 +39,9 @@ public class exerciseAdapter extends RecyclerView.Adapter<ExerciseViewHolder> {
     @NonNull
     @Override
     public ExerciseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View myView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exercise_edit_row, parent,false);
         ExerciseViewHolder holder = new ExerciseViewHolder(myView);
-
         mContext = parent.getContext();
 
         return holder;
@@ -50,10 +50,12 @@ public class exerciseAdapter extends RecyclerView.Adapter<ExerciseViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
 
+        //get each individual exercise and cast its information onto display
         currExercise = exerciseArrayList.get(position);
         holder.exerciseTitle.setText(exerciseArrayList.get(position).getName());
         holder.RPETextView.setText("RPE: " + exerciseArrayList.get(position).getRPE());
 
+        //show video if button is pressed
         holder.showVidButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +65,7 @@ public class exerciseAdapter extends RecyclerView.Adapter<ExerciseViewHolder> {
             }
         });
 
+        //exercise deletes if teacher presses button
         holder.deleteExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

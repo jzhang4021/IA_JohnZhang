@@ -21,13 +21,15 @@ import java.util.ArrayList;
 
 public class addExerciseAdapter extends RecyclerView.Adapter<addExerciseViewHolder> {
 
+    //adapter components
     ArrayList<WorkoutSet> availableWorkoutsList;
+    User currUser;
+    Context context;
 
+    //firebase aspects
     FirebaseFirestore firestore;
     FirebaseStorage storage;
     StorageReference storageRef;
-    User currUser;
-    Context context;
 
     public addExerciseAdapter (ArrayList<WorkoutSet> availableWorkoutList, User currUser){
         this.availableWorkoutsList = availableWorkoutList;
@@ -43,7 +45,6 @@ public class addExerciseAdapter extends RecyclerView.Adapter<addExerciseViewHold
         firestore = FirebaseFirestore.getInstance();
 
         View myView = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_exercise_row, parent, false);
-
         addExerciseViewHolder holder = new addExerciseViewHolder(myView);
         context = parent.getContext();
         return holder;
@@ -54,8 +55,8 @@ public class addExerciseAdapter extends RecyclerView.Adapter<addExerciseViewHold
         holder.title.setText(availableWorkoutsList.get(position).getTitle());
         String imageDirectory = availableWorkoutsList.get(position).getImageResource();
 
+        //import image from firebase
         StorageReference imageRef = storageRef.child(imageDirectory);
-
         //changed the maximum value the image can take up to be 20 megabytes
         final long TWENTY_MEGABYTES = 1024 * 1024 * 20;
         imageRef.getBytes(TWENTY_MEGABYTES).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -72,6 +73,7 @@ public class addExerciseAdapter extends RecyclerView.Adapter<addExerciseViewHold
             public void onClick(View v) {
                 currUser.getOwnedSets().add(availableWorkoutsList.get(position));
                 firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+                //cast context to use activity function
                 ((ExcerciseCentralActivity) context).dialog2.dismiss();
                 ((ExcerciseCentralActivity) context).regenRecyclerView();
             }

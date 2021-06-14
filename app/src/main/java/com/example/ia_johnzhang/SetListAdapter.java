@@ -59,10 +59,9 @@ public class SetListAdapter extends RecyclerView.Adapter<SetListViewHolder> impl
     public void onBindViewHolder(@NonNull SetListViewHolder holder, int position) {
         holder.title.setText(sets.get(position).getTitle());
         String imageDirectory = sets.get(position).getImageResource();
-       // holder.background.setBackgroundResource(sets.get(position).getImageResource());
 
+        //find the image in firebase storage
         StorageReference imageRef = storageRef.child(imageDirectory);
-
         //changed the maximum value the image can take up to be 20 megabytes
         final long TWENTY_MEGABYTES = 1024 * 1024 * 20;
         imageRef.getBytes(TWENTY_MEGABYTES).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -74,12 +73,15 @@ public class SetListAdapter extends RecyclerView.Adapter<SetListViewHolder> impl
             }
         });
 
+        //run code if the layout is pressed
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //if user is teacher, provide menu options
                 if(currUser.getRecord().equals("Teacher")){
+                    //position of exercise in arraylist for reference
                     currPos = position;
-
+                    //open popup menu
                     PopupMenu popupMenu = new PopupMenu(context, v);
                     popupMenu.inflate(R.menu.menu_popup);
                     popupMenu.setOnMenuItemClickListener(SetListAdapter.this);
@@ -87,6 +89,7 @@ public class SetListAdapter extends RecyclerView.Adapter<SetListViewHolder> impl
                     popupMenu.show();
                 }
                 else{
+                    //only provide exercise option for students
                     Intent intent = new Intent(context, ordinaryWorkoutActivity.class);
                     intent.putExtra("currWorkout", sets.get(position));
                     context.startActivity(intent);
@@ -103,6 +106,8 @@ public class SetListAdapter extends RecyclerView.Adapter<SetListViewHolder> impl
     @Override
     public boolean onMenuItemClick(MenuItem item) {
 
+        //solution from https://www.youtube.com/watch?v=hKyjb4b19YM&t=436s
+        //in different cases, open different intents, and pass in exercise information
         switch(item.getItemId()){
             case R.id.edit_workout_popup:
                 Intent intent = new Intent(context, CreateWorkoutActivity.class);

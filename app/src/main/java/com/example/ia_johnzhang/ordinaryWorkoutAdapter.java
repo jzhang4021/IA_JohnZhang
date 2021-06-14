@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class ordinaryWorkoutAdapter extends RecyclerView.Adapter<ordinaryWorkoutViewHolder> {
 
+    //exercise information for reference
     ArrayList<Exercise> mData;
     Context mContext;
 
@@ -33,11 +34,10 @@ public class ordinaryWorkoutAdapter extends RecyclerView.Adapter<ordinaryWorkout
     @Override
     public void onBindViewHolder(@NonNull ordinaryWorkoutViewHolder holder, int position) {
         holder.ordinaryTitle.setText(mData.get(position).getName());
-
         holder.ordinaryRPE.setText("RPE: " + mData.get(position).getRPE());
 
+        //call the activity function to display the video popup if button is pressed
         Exercise currExercise = mData.get(position);
-
         holder.watchVidButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

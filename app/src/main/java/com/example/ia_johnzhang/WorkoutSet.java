@@ -44,14 +44,15 @@ public class WorkoutSet implements Serializable {
     public String getAverageRPE(){
         int giveBack = 0;
 
+        //if there aren't any exercises
         if(getExercises().size() == 0){
             return "N/A";
         }
 
+        //for loop through the RPE of exercises, and divide by amount to calculate average
         for(int i = 0; i < getExercises().size(); i++){
             giveBack += Integer.parseInt(getExercises().get(i).getRPE());
         }
-
         giveBack = giveBack / getExercises().size();
 
         return String.valueOf(giveBack);

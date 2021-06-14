@@ -42,6 +42,7 @@ public class Time {
         minute = minute + add;
     }
 
+    //change total time into minutes, for progress bar usage
     public int getNumConversion(){
         int changedHour = hour * 60;
         int giveBack = changedHour + minute;

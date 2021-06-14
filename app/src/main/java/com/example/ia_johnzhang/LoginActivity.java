@@ -48,33 +48,26 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * utilises firebase auth method to login, update UI after
+     * @param v takes in login button
+     */
     public void login(View v){
         String emailString = username.getText().toString();
         String passwordString = password.getText().toString();
-        System.out.println("hereeeeeeeeee");
 
+        //firebase auth method
         mAuth.signInWithEmailAndPassword(emailString,passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                System.out.println("At least I'm here");
                 if(task.isSuccessful()){
-                    System.out.println("SUCCESS");
                     Log.d("SIGN IN", "Successfully signed in the user");
                     FirebaseUser user = mAuth.getCurrentUser();
                     Toast.makeText(LoginActivity.this,"yay", Toast.LENGTH_SHORT).show();
-
-                    /*
-                    FirebaseUser user = mAuth.getCurrentUser();
-
-                    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-                    firestore.collection("Users").document();
-
-                     */
                     updateUI(user);
 
                 }
                 else{
-                    System.out.println("ERROR");
                     Log.w("SIGN IN", "SignInWithEmail:failure", task.getException());
                     Toast.makeText(LoginActivity.this,"Authentication Failed", Toast.LENGTH_SHORT).show();
                     updateUI(null);
@@ -83,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    //create new intent with info
     public void updateUI(FirebaseUser currentUser){
         if(currentUser != null) {
             Intent intent = new Intent(this, HabitActivity.class);

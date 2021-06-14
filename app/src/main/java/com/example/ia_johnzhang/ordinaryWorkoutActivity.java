@@ -68,6 +68,7 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getInstance().getCurrentUser();
 
+        //get current user info from firebase
         firestore.collection("Users").document(mUser.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -79,19 +80,25 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
             }
         });
 
+        //pass in current workout from previous activity
         Intent i = getIntent();
         currWorkout =(WorkoutSet) i.getSerializableExtra("currWorkout");
         System.out.println(currWorkout.getExercises().get(0).getName());
         System.out.println(currWorkout.getExercises().get(0).getRPE());
-
         ordinaryExerciseRecycler = findViewById(R.id.ordinaryRecycler);
+        //set method to regenerate recycler after updates
         regenRecyclerView();
 
+        //boolean to make sure runnable keeps track of time
         running = true;
         keepTrack();
 
     }
 
+    /**
+     * opens up a popup menu when the video button is pressed - for video tutorials
+     * @param thisExercise takes in exercise information for the resource link
+     */
     public void createNewVideoDialog(Exercise thisExercise){
         dialogBuilder1 = new AlertDialog.Builder(this);
 
@@ -103,8 +110,9 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
         vidView.setMediaController(mediaController);
         mediaController.setAnchorView(vidView);
 
+        //utilising the resource path to locate video
         StorageReference newRef = storageReference.child(thisExercise.getResourcePath());
-
+        //downloading the video and displaying it
         newRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -133,6 +141,7 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
 
     }
 
+    //function to regenerate recycler view in case of updates
     public void regenRecyclerView(){
 
         ordinaryWorkoutAdapter adapter = new ordinaryWorkoutAdapter(currWorkout.getExercises());
@@ -142,18 +151,25 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
 
     }
 
+
+    /**solution taken from https://www.youtube.com/watch?v=wiW_LiAWwfY
+     * monitors time independently as the activity runs, and only saves a record when the close button is pressed.
+     * Displays time in the needed format to save
+     */
     public void keepTrack(){
         Handler handler = new Handler();
 
         handler.post(new Runnable() {
             @Override
             public void run() {
+                //runs independently as long as the activity is active
                 int hours = seconds / 3600;
                 int minutes = (seconds % 3600) / 60;
                 int secs = seconds % 60;
-
+                //conversion to needed format
                  totalTime = String.format(Locale.getDefault(), "%d:%02d%02d", hours, minutes, secs);
 
+                 //add one to the seconds counter every second
                 if(running){
                     seconds++;
                 }
@@ -163,18 +179,18 @@ public class ordinaryWorkoutActivity extends AppCompatActivity {
     }
 
     public void finishWorkout(View v){
+        //stop timer
         running = false;
-
 
         //calculate date, done with guide from https://stackoverflow.com/questions/8654990/how-can-i-get-current-date-in-android/15698784
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String formattedDate = df.format(c);
 
+        //calculate average RPE
         String RPEavg = currWorkout.getAverageRPE();
 
-
-
+        //make a finished workout item, save to user
         FinishedWorkout newFin = new FinishedWorkout(totalTime, RPEavg ,formattedDate, currWorkout.getTitle());
         currUser.getFinishedWorkouts().add(newFin);
         firestore.collection("Users").document(currUser.getEmail()).set(currUser);

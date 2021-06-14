@@ -37,19 +37,28 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * signs up the user and creates a database reference if successful
+     * Allocates whether a user is teacher or student based on email
+     * @param v takes in signup button
+     */
     public void signUp(View v){
         final String emailString = username.getText().toString();
         String passwordString = password.getText().toString();
 
+        //firebase signup method
         mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    //characteristic of teacher emails are the addresses
                     if (emailString.contains("@cis.edu.hk")) {
                         Teacher newTeach = new Teacher(emailString, "Teacher");
+                        //add new user to firebase firestore
                         firestore.collection("Users").document(emailString).set(newTeach);
                         updateUI(mAuth.getCurrentUser());
                     } else {
+                        //will make a student otherwise
                         Student newStud = new Student(emailString, "Student");
                         firestore.collection("Users").document(emailString).set(newStud);
                         updateUI(mAuth.getCurrentUser());
@@ -66,6 +75,7 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
+    //update UI after sign up is successful.
     public void updateUI(FirebaseUser currentUser){
                 if(currentUser != null) {
                     Intent intent = new Intent(SignupActivity.this, HabitActivity.class);
