@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Text;
 
 import static android.os.StrictMode.setThreadPolicy;
 
@@ -52,28 +55,33 @@ public class LoginActivity extends AppCompatActivity {
      * utilises firebase auth method to login, update UI after
      * @param v takes in login button
      */
-    public void login(View v){
-        String emailString = username.getText().toString();
-        String passwordString = password.getText().toString();
+    public void login(View v) {
+        if (!TextUtils.isEmpty(username.getText().toString()) && !TextUtils.isEmpty(password.getText().toString())){
+            String emailString = username.getText().toString();
+            String passwordString = password.getText().toString();
 
-        //firebase auth method
-        mAuth.signInWithEmailAndPassword(emailString,passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Log.d("SIGN IN", "Successfully signed in the user");
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    Toast.makeText(LoginActivity.this,"yay", Toast.LENGTH_SHORT).show();
-                    updateUI(user);
+            //firebase auth method
+            mAuth.signInWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("SIGN IN", "Successfully signed in the user");
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Toast.makeText(LoginActivity.this, "yay", Toast.LENGTH_SHORT).show();
+                        updateUI(user);
 
+                    } else {
+                        Log.w("SIGN IN", "SignInWithEmail:failure", task.getException());
+                        Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                        updateUI(null);
+                    }
                 }
-                else{
-                    Log.w("SIGN IN", "SignInWithEmail:failure", task.getException());
-                    Toast.makeText(LoginActivity.this,"Authentication Failed", Toast.LENGTH_SHORT).show();
-                    updateUI(null);
-                }
-            }
-        });
+            });
+        }
+        else{
+            Toast.makeText(this, "Enter all info please", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     //create new intent with info

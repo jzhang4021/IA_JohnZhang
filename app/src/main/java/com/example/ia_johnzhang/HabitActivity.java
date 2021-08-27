@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import android.text.TextUtils;
 import java.util.Date;
 
 public class HabitActivity extends AppCompatActivity {
@@ -181,22 +182,32 @@ public class HabitActivity extends AppCompatActivity {
      * @param v takes in the input water button
      */
     public void saveHydration(View v){
+        if(!TextUtils.isEmpty(addHydration.getText().toString())) {
+            int addAmount = Integer.parseInt(addHydration.getText().toString());
 
-       int addAmount = Integer.parseInt(addHydration.getText().toString());
+            //increment to max amount if user has drank more water than the limit
+            if (addAmount > 10000) {
+                Toast.makeText(this, "Enter a realistic value please", Toast.LENGTH_SHORT).show();
+            } else if (TextUtils.isEmpty(addHydration.getText().toString())) {
+                Toast.makeText(this, "Enter a value please", Toast.LENGTH_SHORT).show();
+            } else {
+                if(currUser.getCurrRecord().getHydration() < 3000) {
+                    if (currUser.getCurrRecord().getHydration() + addAmount < 3000) {
+                        waterBar.incrementProgressBy(addAmount);
+                    } else {
+                        waterBar.incrementProgressBy(3000 - currUser.getCurrRecord().getHydration());
+                        hydrationMessage.setVisibility(View.VISIBLE);
+                    }
+                }
 
-       //increment to max amount if user has drank more water than the limit
-        if (currUser.getCurrRecord().getHydration() + addAmount <  3000){
-            waterBar.incrementProgressBy(addAmount);
+                //update user's hydration record
+                currUser.getCurrRecord().setHydration(currUser.getCurrRecord().getHydration() + addAmount);
+                firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+            }
         }
         else{
-            waterBar.incrementProgressBy(3000 - currUser.getCurrRecord().getHydration());
-            hydrationMessage.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "enter data please", Toast.LENGTH_SHORT).show();
         }
-
-       //update user's hydration record
-        currUser.getCurrRecord().setHydration(currUser.getCurrRecord().getHydration() + addAmount);
-        firestore.collection("Users").document(currUser.getEmail()).set(currUser);
-
     }
 
     /**
@@ -204,30 +215,50 @@ public class HabitActivity extends AppCompatActivity {
      * @param v takes in the screen time button
      */
     public void saveScreenTime(View v){
-        //casts info to time
-        int addHour = Integer.parseInt(hourTextView.getText().toString());
-        int addMinute = Integer.parseInt(minuteTextView.getText().toString());
-        Time tempTime = new Time(addHour,addMinute);
 
-        //error handling of too many minutes
-        if(addMinute > 60){
-            Toast.makeText(this, "Less than 60 minutes please", Toast.LENGTH_SHORT).show();
+        if(TextUtils.isEmpty(hourTextView.getText().toString()) && TextUtils.isEmpty(minuteTextView.getText().toString())){
+            Toast.makeText(this, "Please enter a value", Toast.LENGTH_SHORT).show();
         }
         else {
-            //check if user has crossed the screen time limit, if so increment to max
-            if(currUser.getCurrRecord().getScreenTime().getNumConversion() + tempTime.getNumConversion() < 240){
-                screenTimeBar.incrementProgressBy(tempTime.getNumConversion());
+            //casts info to time
+            int addHour;
+            int addMinute;
+
+            if(!TextUtils.isEmpty(hourTextView.getText().toString())){
+                addHour = Integer.parseInt(hourTextView.getText().toString());
             }
             else{
-                screenTimeBar.incrementProgressBy(240 - currUser.getCurrRecord().getScreenTime().getNumConversion());
-                screenTimeMessage.setVisibility(View.VISIBLE);
+                addHour = 0;
             }
 
-            //update firebase info
-            currUser.getCurrRecord().getScreenTime().addHour(addHour);
-            currUser.getCurrRecord().getScreenTime().addMinute(addMinute);
-            firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+            if(!TextUtils.isEmpty(minuteTextView.getText().toString())){
+                addMinute = Integer.parseInt(minuteTextView.getText().toString());
+            }
+            else{
+                addMinute = 0;
+            }
 
+            Time tempTime = new Time(addHour, addMinute);
+
+            //error handling of too many minutes
+            if (addMinute > 60) {
+                Toast.makeText(this, "Less than 60 minutes please", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                //check if user has crossed the screen time limit, if so increment to max
+                if (currUser.getCurrRecord().getScreenTime().getNumConversion() + tempTime.getNumConversion() < 240) {
+                    screenTimeBar.incrementProgressBy(tempTime.getNumConversion());
+                } else {
+                    screenTimeBar.incrementProgressBy(240 - currUser.getCurrRecord().getScreenTime().getNumConversion());
+                    screenTimeMessage.setVisibility(View.VISIBLE);
+                }
+
+                //update firebase info
+                currUser.getCurrRecord().getScreenTime().addHour(addHour);
+                currUser.getCurrRecord().getScreenTime().addMinute(addMinute);
+                firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+
+            }
         }
     }
 
@@ -236,28 +267,51 @@ public class HabitActivity extends AppCompatActivity {
      * @param v takes in the sleep time button
      */
     public void SaveSleepTime(View v){
-        //casts to time
-        int hour = Integer.parseInt(sleepHourText.getText().toString());
-        int minute = Integer.parseInt(sleepMinuteText.getText().toString());
-        Time temp = new Time(hour, minute);
-
-        currUser.getCurrRecord().setSleepDuration(temp);
-        firestore.collection("Users").document(currUser.getEmail()).set(currUser);
-
-        if(minute > 60){
-            Toast.makeText(this, "Less than 60 minutes please", Toast.LENGTH_SHORT).show();
+        if(TextUtils.isEmpty(sleepHourText.getText().toString()) && TextUtils.isEmpty(sleepMinuteText.getText().toString())){
+            Toast.makeText(this, "enter an amount please", Toast.LENGTH_SHORT).show();
         }
         else {
-            //check if user has slept past the limit, set value to max if so
-            if (temp.getNumConversion() < 480) {
-                sleepProgress.setProgress(temp.getNumConversion());
-                ObjectAnimator.ofInt(sleepProgress, "Progress", temp.getNumConversion()).setDuration(2000).start();
-            } else {
-                sleepProgress.setProgress(480);
-                ObjectAnimator.ofInt(sleepProgress, "Progress", 480).setDuration(2000).start();
+            //casts to time
+            int hour;
+            int minute;
+
+            if(!TextUtils.isEmpty(sleepHourText.getText().toString())){
+                hour = Integer.parseInt(sleepHourText.getText().toString());
             }
-            sleepIndicator.setText(currUser.getCurrRecord().getSleepDuration().getHour() + " Hrs " +
-                    currUser.getCurrRecord().getSleepDuration().getMinute() + " min");
+            else{
+                hour = 0;
+            }
+
+            if(!TextUtils.isEmpty(sleepMinuteText.getText().toString())){
+                minute = Integer.parseInt(sleepMinuteText.getText().toString());
+            }
+            else{
+                minute = 0;
+            }
+
+            Time temp = new Time(hour, minute);
+
+            currUser.getCurrRecord().setSleepDuration(temp);
+            firestore.collection("Users").document(currUser.getEmail()).set(currUser);
+
+            if (minute > 60) {
+                Toast.makeText(this, "Less than 60 minutes please", Toast.LENGTH_SHORT).show();
+            }
+            else if (hour > 16){
+                Toast.makeText(this, "Realistic amount please", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                //check if user has slept past the limit, set value to max if so
+                if (temp.getNumConversion() < 480) {
+                    sleepProgress.setProgress(temp.getNumConversion());
+                    ObjectAnimator.ofInt(sleepProgress, "Progress", temp.getNumConversion()).setDuration(2000).start();
+                } else {
+                    sleepProgress.setProgress(480);
+                    ObjectAnimator.ofInt(sleepProgress, "Progress", 480).setDuration(2000).start();
+                }
+                sleepIndicator.setText(currUser.getCurrRecord().getSleepDuration().getHour() + " Hrs " +
+                        currUser.getCurrRecord().getSleepDuration().getMinute() + " min");
+            }
         }
     }
 

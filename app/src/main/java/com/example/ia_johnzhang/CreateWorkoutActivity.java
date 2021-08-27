@@ -144,13 +144,18 @@ public class CreateWorkoutActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //create new exercise and add it to the workout
-                tempExercise = new Exercise(exerciseName.getText().toString(),RPE.getText().toString());
-                uploadVideoFirebase(tempStuff.getData());
-                currWorkout.addExercise(tempExercise);
-                tempExercise = null;
-                dialog.dismiss();
-                regenRecyclerView();
+                if(Integer.parseInt(RPE.getText().toString()) < 10) {
+                    //create new exercise and add it to the workout
+                    tempExercise = new Exercise(exerciseName.getText().toString(), RPE.getText().toString());
+                    uploadVideoFirebase(tempStuff.getData());
+                    currWorkout.addExercise(tempExercise);
+                    tempExercise = null;
+                    dialog.dismiss();
+                    regenRecyclerView();
+                }
+                else{
+                    Toast.makeText(CreateWorkoutActivity.this, "Enter valid RPE please", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
